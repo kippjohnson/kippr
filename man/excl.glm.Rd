@@ -19,10 +19,13 @@ from the "." (i.e., exclude a column or columns from the rest of the
 variables in the dataset).
 }
 \examples{
-
+data(infert)
 m1 <- excl.glm("conc", Theoph, excl.cols="Subject")
 summary(m1)
 
-m1 <- excl.glm("conc", Theoph, excl.cols=c(1,2))
-summary(m1)
+m2 <- excl.glm("conc", Theoph, excl.cols=c(1,2))
+summary(m2)
+
+m3 <- excl.glm("case", infert, excl.cols="Subject", family=binomial())
+summary(m3)
 }
