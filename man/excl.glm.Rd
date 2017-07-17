@@ -2,16 +2,16 @@
 % Please edit documentation in R/excl.glm.R
 \name{excl.glm}
 \alias{excl.glm}
-\title{Easily exclude name columns in glm()}
+\title{Easily exclude columns in glm()}
 \usage{
 excl.glm(depvar, indata, excl.cols = NULL, ...)
 }
 \arguments{
-\item{indata}{The dataset}
+\item{indata}{Dataset}
 
-\item{excl.cols}{Vector of column names or column numbers to include}
+\item{excl.cols}{Vector of column names or vector of column numbers to exclude}
 
-\item{The}{Y variable}
+\item{Y}{Dependent variable}
 }
 \description{
 Preserve the " Y ~ . " formula in a glm, but exclude specific named columns
