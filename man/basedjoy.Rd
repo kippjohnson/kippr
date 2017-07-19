@@ -7,14 +7,15 @@ For those who are allergic to ggplot}
 \usage{
 basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
   fill.col = "grey", add.grid = TRUE, gridcolor = "black",
-  xlabtext = "", ylabtext = "", addgroupnames = TRUE, title = "", ...)
+  xlabtext = "", ylabtext = "", addgroupnames = TRUE, global.lwd = 1.5,
+  boxtype = "n", title = "", ...)
 }
 \arguments{
 \item{density.var}{The variable you want to calculate densities for}
 
 \item{grouping.var}{A grouping variable (not: doesn't work with continuous variable yet)}
 
-\item{dataset}{The input dataset}
+\item{dataset}{The input dataset, currently must be a dataframe}
 
 \item{shrinkfactor}{Controls space between the distributions}
 
@@ -29,6 +30,10 @@ basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
 \item{ylabtext}{Self explanatory}
 
 \item{addgroupnames}{Add names of the grouping variable to Y axis?}
+
+\item{global.lwd}{line width of the density plot and gridlines (if applicable)}
+
+\item{boxtype}{Box drawn around plot, options in c("o","7","l","c","u") for lines or "n" for no lines (default)}
 
 \item{title}{Set "main=title"}
 }

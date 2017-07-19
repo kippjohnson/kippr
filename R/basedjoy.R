@@ -106,6 +106,3 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   }
 
 };
-
-basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
-         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
