@@ -6,7 +6,7 @@
 For those who are allergic to ggplot}
 \usage{
 basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
-  fill.col = "grey", add.grid = TRUE, gridcolor = "black",
+  xstretch = 3, fill.col = "grey", add.grid = TRUE, gridcolor = "black",
   xlabtext = "", ylabtext = "", addgroupnames = TRUE, global.lwd = 1.5,
   boxtype = "n", title = "", ...)
 }
@@ -18,6 +18,8 @@ basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
 \item{dataset}{The input dataset, currently must be a dataframe}
 
 \item{shrinkfactor}{Controls space between the distributions}
+
+\item{xstretch}{x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.}
 
 \item{fill.col}{Fill color for the distributions}
 
@@ -44,7 +46,7 @@ For those who are allergic to ggplot
 \examples{
 Using the iris dataset:
 basedjoy(density.var="Sepal.Length", grouping.var="Species", data=iris,
-mai=c(1,1,1,1))
+boxtype="o", mai=c(1,1,1,1))
 
 Using an example dataset from ggjoy
 library(ggjoy)

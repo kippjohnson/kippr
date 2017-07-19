@@ -5,6 +5,7 @@
 #' @param grouping.var A grouping variable (not: doesn't work with continuous variable yet)
 #' @param dataset The input dataset, currently must be a dataframe
 #' @param shrinkfactor Controls space between the distributions
+#' @param xstretch x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.
 #' @param fill.col Fill color for the distributions
 #' @param add.grid Should we continue the x lines past calculated density
 #' @param gridcolor Color of gridlines, only if add.grid is TRUE
@@ -18,7 +19,7 @@
 #' @examples
 #' Using the iris dataset:
 #' basedjoy(density.var="Sepal.Length", grouping.var="Species", data=iris,
-#' mai=c(1,1,1,1))
+#' boxtype="o", mai=c(1,1,1,1))
 #'
 #' Using an example dataset from ggjoy
 #' library(ggjoy)
@@ -30,6 +31,7 @@
 #'         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
 
 basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
+                     xstretch = 3,
                      fill.col="grey", add.grid=TRUE, gridcolor="black",
                      xlabtext="", ylabtext="", addgroupnames=TRUE,
                      global.lwd=1.5, boxtype="n",
@@ -51,8 +53,8 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   bw.total <- signif(bw.nrd(dataset[, density.var]), 5) # use same bandwidth for each plot
   print(paste("Using density bandwidth", bw.total))
 
-  data.min <- min(dataset[, density.var]) - 3 * bw.total
-  data.max <- max(dataset[, density.var]) + 3 * bw.total
+  data.min <- min(dataset[, density.var]) - xstretch * bw.total
+  data.max <- max(dataset[, density.var]) + xstretch * bw.total
 
   # Establish the maximum Y value
   y.max <- -Inf
