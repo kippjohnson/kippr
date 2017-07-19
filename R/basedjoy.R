@@ -18,12 +18,21 @@
 #' basedjoy(density.var="Sepal.Length", grouping.var="Species", data=iris,
 #' mai=c(1,1,1,1))
 #'
+#' Using an example dataset from ggjoy
+#' library(ggjoy)
+#' lincoln_df <- as.data.frame(lincoln_weather)
+#' lincoln_df$mean.temp <- as.double(lincoln_df$`Mean Temperature [F]`)
+#' lincoln_df$mnth <- as.factor(lincoln_df$Month)
+#'
+#' basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
+#'         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
+
 
 
 basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
                      fill.col="grey", add.grid=TRUE, gridcolor="black",
                      xlabtext="", ylabtext="", addgroupnames=TRUE,
-                     title="Based Joy",
+                     title="",
                      ...){
 
   dots <- list(...)
@@ -32,31 +41,26 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   group.names <- unique(dataset[,grouping.var]) # get the group names
   n.groups <- length(group.names)
 
-  bw.total <- bw.nrd(dataset[, density.var]) # use same bandwidth for each plot
+  bw.total <- signif(bw.nrd(dataset[, density.var]),3) # use same bandwidth for each plot
+  print(paste("Using density bandwidth", bw.total))
 
-  min.density.var <- min(
-    by(iris[, "Sepal.Length"], iris[,"Species"],
-       function(x) min(density(x)$x))
-    )
-
-  max.density.var <- min(
-    by(iris[, "Sepal.Length"], iris[,"Species"],
-       function(x) max(density(x)$x))
-  )
+  data.min <- min(dataset[, density.var]) - 3 * bw.total
+  data.max <- max(dataset[, density.var]) + 3 * bw.total
 
   # Establish the maximum Y value
-  y.max <- -10
+  y.max <- -Inf
   for(i in 1:n.groups){
     dvec <- dataset[dataset[, grouping.var] == group.names[i], density.var]
-    dens <- density(x=dvec, bw=bw.total)
+    dens <- density(x=dvec, bw=bw.total, from=data.min, to=data.max)
 
     y.var <- max(dens$y+(n.groups-i)/shrinkfactor)
     if(y.var > y.max){y.max <- y.var}
   }
 
   # Plot the null plot
-  seqlength <- 100
-  plot(x=seq(max.density.var, max.density.var, length.out=seqlength),
+  seqlength <- 1e5
+
+  plot(x=seq(data.min, data.max, length.out=seqlength),
        y=seq(0, y.max/shrinkfactor, length.out=seqlength),
        type="n",
        xlab="",
@@ -72,7 +76,7 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   for(i in 1:n.groups){
 
     dvec <- dataset[dataset[, grouping.var] == group.names[i], density.var]
-    dens <- density(x=dvec, bw=bw.total)
+    dens <- density(x=dvec, bw=bw.total, from=data.min, to=data.max)
 
     x.var <- dens$x
     y.var <- dens$y+(n.groups-i)/shrinkfactor
@@ -94,4 +98,4 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
 };
 
 
-
+#basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=1)

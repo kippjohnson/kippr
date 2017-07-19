@@ -7,8 +7,7 @@ For those who are allergic to ggplot}
 \usage{
 basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
   fill.col = "grey", add.grid = TRUE, gridcolor = "black",
-  xlabtext = "", ylabtext = "", addgroupnames = TRUE,
-  title = "Based Joy", ...)
+  xlabtext = "", ylabtext = "", addgroupnames = TRUE, title = "", ...)
 }
 \arguments{
 \item{density.var}{The variable you want to calculate densities for}
@@ -42,4 +41,12 @@ Using the iris dataset:
 basedjoy(density.var="Sepal.Length", grouping.var="Species", data=iris,
 mai=c(1,1,1,1))
 
+Using an example dataset from ggjoy
+library(ggjoy)
+lincoln_df <- as.data.frame(lincoln_weather)
+lincoln_df$mean.temp <- as.double(lincoln_df$`Mean Temperature [F]`)
+lincoln_df$mnth <- as.factor(lincoln_df$Month)
+
+basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
+        title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
 }
