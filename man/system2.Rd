@@ -11,3 +11,16 @@ system2(...)
 Print system commands to KnitR Output
 Taken from Stack Overflow
 }
+\examples{
+\\donotrun{
+cmd <- paste0(
+plink2,
+" --bfile ", mega.bedfile,
+" --extract ", var.file,
+" --recode A",
+" --threads ", nthreads,
+" --pca 10",
+" --out BioMe_htn_variant_subset"
+)
+}
+}

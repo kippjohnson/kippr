@@ -4,11 +4,11 @@
 \alias{basedjoy}
 \title{(Partial) Reimplementation of the ggjoy package in base R graphics.}
 \usage{
-basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
+basedjoy(density.var, grouping.var, dataset, shrinkfactor = NA,
   xstretch = 3, fill.col = "grey", add.grid = TRUE, x.gridcolor = NA,
   y.gridcolor = "lightgrey", xlabtext = "", ylabtext = "",
-  addgroupnames = TRUE, global.lwd = 1.5, boxtype = "n", title = "",
-  ...)
+  addgroupnames = TRUE, xlabadjLR = -1.5, global.lwd = 1.5,
+  boxtype = "n", title = "", verbose = FALSE, ...)
 }
 \arguments{
 \item{density.var}{The variable you want to calculate densities for}
@@ -17,7 +17,7 @@ basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
 
 \item{dataset}{The input dataset, currently must be a dataframe}
 
-\item{shrinkfactor}{Controls Y overlap between the distributions}
+\item{shrinkfactor}{Controls Y overlap/distance between the distributions. Main tuning parameter for the plot. This is essentially the perspective. At 0, you are looking straight down at the distributions and will see nothing. At infinite, all density plots sit same Y axis.}
 
 \item{xstretch}{x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.}
 
@@ -31,25 +31,29 @@ basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
 
 \item{addgroupnames}{Add names of the grouping variable to Y axis?}
 
+\item{xlabadjLR}{Float; adjust the group names left or right (if addgroupnames is TRUE)}
+
 \item{global.lwd}{line width of the density plot and gridlines (if applicable)}
 
 \item{boxtype}{Box drawn around plot, options in c("o","7","l","c","u") for lines or "n" for no lines (default)}
 
 \item{title}{Set "main=title"}
 
+\item{verbose}{Logical; print the kernel bandwidth?}
+
 \item{...}{Additional graphical parameters to pass to par()}
 
 \item{gridcolor}{Color of gridlines, only if add.grid is TRUE}
 }
 \description{
-For those who are allergic to ggplot
+ggjoy for those who are allergic to ggplot. Original ggjoy by Claus Wilke. Mistakes my own.
 }
 \examples{
-Using the iris dataset:
+# Using the iris dataset:
 basedjoy(density.var="Sepal.Length", grouping.var="Species", data=iris,
-boxtype="o", mai=c(1,1,1,1))
+shrinkfactor=10, boxtype="o", mai=c(1,1,1,1))
 
-Using an example dataset from ggjoy
+# Using an example dataset from ggjoy
 library(ggjoy)
 lincoln_df <- as.data.frame(lincoln_weather)
 lincoln_df$mean.temp <- as.double(lincoln_df$`Mean Temperature [F]`)
@@ -57,4 +61,15 @@ lincoln_df$mnth <- as.factor(lincoln_df$Month)
 
 basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
+
+
+# Explore how different values of shrinkfactor change perspective
+par(mfrow=c(2,2))
+for(i in 2:5){
+   sf <- (i)^3
+   basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=sf, xstretch=3,
+            title=paste("shrinkfactor =", sf),
+            mai=c(0.75,0.75,0.5,0.1), xlabtext="Degrees Fahrenheit", ylabtext="Month",
+            xlabadjLR=-1.5)
+            }
 }

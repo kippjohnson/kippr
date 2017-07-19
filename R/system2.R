@@ -1,7 +1,7 @@
 #' Print system commands to KnitR Output
 #' Taken from Stack Overflow
 #'
-#' @example
+#' @examples
 #' \donotrun{
 #' cmd <- paste0(
 #' plink2,
