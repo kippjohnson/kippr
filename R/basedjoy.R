@@ -1,10 +1,11 @@
-#' (Partial) Reimplementation of the ggjoy package in base R graphics
+#' (Partial) Reimplementation of the ggjoy package in base R graphics.
+#'
 #' For those who are allergic to ggplot
 #'
 #' @param density.var The variable you want to calculate densities for
-#' @param grouping.var A grouping variable (not: doesn't work with continuous variable yet)
+#' @param grouping.var A grouping variable (Note: doesn't work with continuous variable yet)
 #' @param dataset The input dataset, currently must be a dataframe
-#' @param shrinkfactor Controls space between the distributions
+#' @param shrinkfactor Controls Y overlap between the distributions
 #' @param xstretch x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.
 #' @param fill.col Fill color for the distributions
 #' @param add.grid Should we continue the x lines past calculated density
@@ -15,7 +16,9 @@
 #' @param title Set "main=title"
 #' @param global.lwd line width of the density plot and gridlines (if applicable)
 #' @param boxtype Box drawn around plot, options in c("o","7","l","c","u") for lines or "n" for no lines (default)
-#' @export basedjoy
+#' @param verbose Logical; print the kernel bandwidth?
+#' @param ... Additional graphical parameters to pass to par()
+#' @export
 #' @examples
 #' Using the iris dataset:
 #' basedjoy(density.var="Sepal.Length", grouping.var="Species", data=iris,
@@ -32,10 +35,12 @@
 
 basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
                      xstretch = 3,
-                     fill.col="grey", add.grid=TRUE, gridcolor="black",
+                     fill.col="grey", add.grid=TRUE,
+                     x.gridcolor=NA, y.gridcolor="lightgrey",
                      xlabtext="", ylabtext="", addgroupnames=TRUE,
                      global.lwd=1.5, boxtype="n",
                      title="",
+                     verbose=FALSE,
                      ...){
 
   dots <- list(...)
@@ -51,7 +56,8 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   n.groups <- length(group.names)
 
   bw.total <- signif(bw.nrd(dataset[, density.var]), 5) # use same bandwidth for each plot
-  print(paste("Using density bandwidth", bw.total))
+
+  if(verbose){ print(paste("Using density bandwidth", bw.total)) }
 
   data.min <- min(dataset[, density.var]) - xstretch * bw.total
   data.max <- max(dataset[, density.var]) + xstretch * bw.total
@@ -75,11 +81,15 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
        xlab="",
        ylab="",
        yaxt="n",
-       xaxt="n",
        bty=boxtype,
        main=title)
 
-  title(xlab=xlabtext, ylab=ylabtext)
+  if(add.grid==TRUE){
+      grid(col=y.gridcolor, ny=0, lty=1)
+  }
+
+  title(ylab=ylabtext)
+  title(xlab=xlabtext)
 
   # Add in each distribution
   ypos.store <- numeric(length=n.groups)
@@ -92,8 +102,10 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
     y.var <- dens$y+(n.groups-i)/shrinkfactor
     ypos.store[i] <- min(y.var)
 
-    if(add.grid==TRUE){abline(h=min(y.var/shrinkfactor),
-                              col=gridcolor, lwd=global.lwd)}
+    if(add.grid==TRUE){
+        abline(h=min(y.var/shrinkfactor),
+               col=x.gridcolor, lwd=global.lwd);
+        }
 
     lines(x.var, y.var/shrinkfactor, lwd=global.lwd)
     polygon(x.var, y.var/shrinkfactor, col=fill.col)
@@ -105,6 +117,15 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
          labels=group.names,
          las=1,
          lwd=boxtype.xaxis)
-  }
-
+    }
 };
+
+
+ library(ggjoy)
+ lincoln_df <- as.data.frame(lincoln_weather)
+ lincoln_df$mean.temp <- as.double(lincoln_df$`Mean Temperature [F]`)
+ lincoln_df$mnth <- as.factor(lincoln_df$Month)
+
+ basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
+         title="Monthly Temperature in Lincoln", mai=c(1,1.25,1,0.5),
+         xlabtext="Degrees [F]", add.grid=TRUE)

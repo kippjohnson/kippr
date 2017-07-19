@@ -2,30 +2,28 @@
 % Please edit documentation in R/basedjoy.R
 \name{basedjoy}
 \alias{basedjoy}
-\title{(Partial) Reimplementation of the ggjoy package in base R graphics
-For those who are allergic to ggplot}
+\title{(Partial) Reimplementation of the ggjoy package in base R graphics.}
 \usage{
 basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
-  xstretch = 3, fill.col = "grey", add.grid = TRUE, gridcolor = "black",
-  xlabtext = "", ylabtext = "", addgroupnames = TRUE, global.lwd = 1.5,
-  boxtype = "n", title = "", ...)
+  xstretch = 3, fill.col = "grey", add.grid = TRUE, x.gridcolor = NA,
+  y.gridcolor = "lightgrey", xlabtext = "", ylabtext = "",
+  addgroupnames = TRUE, global.lwd = 1.5, boxtype = "n", title = "",
+  ...)
 }
 \arguments{
 \item{density.var}{The variable you want to calculate densities for}
 
-\item{grouping.var}{A grouping variable (not: doesn't work with continuous variable yet)}
+\item{grouping.var}{A grouping variable (Note: doesn't work with continuous variable yet)}
 
 \item{dataset}{The input dataset, currently must be a dataframe}
 
-\item{shrinkfactor}{Controls space between the distributions}
+\item{shrinkfactor}{Controls Y overlap between the distributions}
 
 \item{xstretch}{x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.}
 
 \item{fill.col}{Fill color for the distributions}
 
 \item{add.grid}{Should we continue the x lines past calculated density}
-
-\item{gridcolor}{Color of gridlines, only if add.grid is TRUE}
 
 \item{xlabtext}{Self explanatory}
 
@@ -38,9 +36,12 @@ basedjoy(density.var, grouping.var, dataset, shrinkfactor = 2.5,
 \item{boxtype}{Box drawn around plot, options in c("o","7","l","c","u") for lines or "n" for no lines (default)}
 
 \item{title}{Set "main=title"}
+
+\item{...}{Additional graphical parameters to pass to par()}
+
+\item{gridcolor}{Color of gridlines, only if add.grid is TRUE}
 }
 \description{
-(Partial) Reimplementation of the ggjoy package in base R graphics
 For those who are allergic to ggplot
 }
 \examples{
