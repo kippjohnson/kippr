@@ -12,7 +12,6 @@
 #' @param ylabtext Self explanatory
 #' @param addgroupnames Add names of the grouping variable to Y axis?
 #' @param title Set "main=title"
-#' @param ... Additional graphical parameters to pass to par()
 #' @export basedjoy
 #' @examples
 #' Using the iris dataset:
@@ -20,12 +19,11 @@
 #' mai=c(1,1,1,1))
 #'
 
+
 basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
-                     global.bw=TRUE, user.bw=NA,
                      fill.col="grey", add.grid=TRUE, gridcolor="black",
                      xlabtext="", ylabtext="", addgroupnames=TRUE,
-                     title="",
-                     userfromto=FALSE, userfrom=NA, userto=NA,
+                     title="Based Joy",
                      ...){
 
   dots <- list(...)
@@ -34,11 +32,7 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   group.names <- unique(dataset[,grouping.var]) # get the group names
   n.groups <- length(group.names)
 
-  if(global.bw==TRUE){
-    bw.total <- bw.nrd(dataset[, density.var]) # use same bandwidth for each plot
-  }else if(global.bw==FALSE | !(is.na(user.bw))){
-     bw.user <- bw.user
-  }
+  bw.total <- bw.nrd(dataset[, density.var]) # use same bandwidth for each plot
 
   min.density.var <- min(
     by(iris[, "Sepal.Length"], iris[,"Species"],
@@ -54,19 +48,7 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   y.max <- -10
   for(i in 1:n.groups){
     dvec <- dataset[dataset[, grouping.var] == group.names[i], density.var]
-
-    if(userfromto==FALSE){
-    if(global.bw==TRUE & is.na(user.bw)){
-        dens <- density(x=dvec, bw=bw.total) # if global bw
-    }else if(global.bw==FALSE & is.na(user.bw)){
-        dens <- density(x=dvec, bw=bw.user) # if specificed bw
-    }else{
-        dens <- density(x=dvec) # default calc of bw
-    }
-    }else if(userfromto==TRUE){
-        dens <- density(x=dvec, bw=bw.user,
-                        from=userfrom, to=userto)
-        }
+    dens <- density(x=dvec, bw=bw.total)
 
     y.var <- max(dens$y+(n.groups-i)/shrinkfactor)
     if(y.var > y.max){y.max <- y.var}
@@ -90,7 +72,6 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
   for(i in 1:n.groups){
 
     dvec <- dataset[dataset[, grouping.var] == group.names[i], density.var]
-
     dens <- density(x=dvec, bw=bw.total)
 
     x.var <- dens$x
