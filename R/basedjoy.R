@@ -7,7 +7,7 @@
 #' @param dataset The input dataset, currently must be a dataframe
 #' @param shrinkfactor Controls Y overlap/distance between the distributions. Main tuning parameter for the plot. This is essentially the perspective. At 0, you are looking straight down at the distributions and will see nothing. At infinite, all density plots sit same Y axis.
 #' @param xstretch x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.
-#' @param fill.col Fill color for the distributions
+#' @param fill.col Fill color for the distributions; either one color or a vector of multiple, in which case a gradient will be built of length unique(grouping.var)
 #' @param add.grid Should we continue the x lines past calculated density
 #' @param gridcolor Color of gridlines, only if add.grid is TRUE
 #' @param xlabtext Self explanatory
@@ -19,6 +19,10 @@
 #' @param boxtype Box drawn around plot, options in c("o","7","l","c","u") for lines or "n" for no lines (default)
 #' @param verbose Logical; print the kernel bandwidth?
 #' @param ... Additional graphical parameters to pass to par()
+#' @import graphics
+#' @import stats
+#' @import grDevices
+#' @import utils
 #' @export
 #' @examples
 #' # Using the iris dataset:
@@ -78,7 +82,7 @@ basedjoy <- function(density.var, grouping.var, dataset,
   group.names <- unique(dataset[,grouping.var]) # get the group names
   n.groups <- length(group.names)
 
-  bw.total <- signif(bw.nrd(dataset[, density.var]), 5) # use same bandwidth for each plot
+  bw.total <- signif(bw.nrd0(dataset[, density.var]), 5) # use same bandwidth for each plot
 
   if(verbose){ print(paste("Using density bandwidth:", bw.total)) }
 
@@ -114,6 +118,14 @@ basedjoy <- function(density.var, grouping.var, dataset,
   title(ylab=ylabtext)
   title(xlab=xlabtext)
 
+  fill.cols <- character(length=n.groups)
+  if(length(fill.col)==1){
+      fill.cols <- rep(fill.col, times=n.groups)
+    }else if(length(fill.col>1)){
+          colfunc <- colorRampPalette(fill.col)
+          fill.cols <- colfunc(n.groups)
+          }
+
   # Add in each distribution
   ypos.store <- numeric(length=n.groups)
   for(i in 1:n.groups){
@@ -131,7 +143,7 @@ basedjoy <- function(density.var, grouping.var, dataset,
         }
 
     lines(x.var, y.var/shrinkfactor, lwd=global.lwd)
-    polygon(x.var, y.var/shrinkfactor, col=fill.col)
+    polygon(x.var, y.var/shrinkfactor, col=fill.cols[i])
   }
 
   if(addgroupnames==TRUE){

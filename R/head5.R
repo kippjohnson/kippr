@@ -7,6 +7,7 @@
 #' @param df A data frame or data table
 #' @param nc Number of columns to print, default 5
 #' @param nr Number of rows to print, default 5
+#' @import data.table
 #' @export head5
 #' @examples
 #' abc <- data.table(matrix(1:2000, 20, 100))

@@ -4,6 +4,9 @@
 #' @param table Table to choose
 #' @param database Database on the MySQL server
 #' @param connect A previously opened connection, see example
+#' @import data.table
+#' @importFrom RMySQL dbConnect
+#' @importFrom RMySQL dbGetQuery
 #' @export
 #' @examples
 #' \dontrun{
