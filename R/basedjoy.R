@@ -3,7 +3,7 @@
 #'
 #' @param density.var The variable you want to calculate densities for
 #' @param grouping.var A grouping variable (not: doesn't work with continuous variable yet)
-#' @param dataset The input dataset
+#' @param dataset The input dataset, currently must be a dataframe
 #' @param shrinkfactor Controls space between the distributions
 #' @param fill.col Fill color for the distributions
 #' @param add.grid Should we continue the x lines past calculated density
@@ -12,6 +12,8 @@
 #' @param ylabtext Self explanatory
 #' @param addgroupnames Add names of the grouping variable to Y axis?
 #' @param title Set "main=title"
+#' @param global.lwd line width of the density plot and gridlines (if applicable)
+#' @param boxtype Box drawn around plot, options in c("o","7","l","c","u") for lines or "n" for no lines (default)
 #' @export basedjoy
 #' @examples
 #' Using the iris dataset:
@@ -27,21 +29,26 @@
 #' basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
 #'         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
 
-
-
 basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
                      fill.col="grey", add.grid=TRUE, gridcolor="black",
                      xlabtext="", ylabtext="", addgroupnames=TRUE,
+                     global.lwd=1.5, boxtype="n",
                      title="",
                      ...){
 
   dots <- list(...)
   do.call(par, dots)
 
+  if(boxtype=="n"){
+      boxtype.xaxis <- NA
+  }else{
+      boxtype.xaxis <- 1
+      }
+
   group.names <- unique(dataset[,grouping.var]) # get the group names
   n.groups <- length(group.names)
 
-  bw.total <- signif(bw.nrd(dataset[, density.var]),3) # use same bandwidth for each plot
+  bw.total <- signif(bw.nrd(dataset[, density.var]), 5) # use same bandwidth for each plot
   print(paste("Using density bandwidth", bw.total))
 
   data.min <- min(dataset[, density.var]) - 3 * bw.total
@@ -67,6 +74,7 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
        ylab="",
        yaxt="n",
        xaxt="n",
+       bty=boxtype,
        main=title)
 
   title(xlab=xlabtext, ylab=ylabtext)
@@ -82,9 +90,10 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
     y.var <- dens$y+(n.groups-i)/shrinkfactor
     ypos.store[i] <- min(y.var)
 
-    if(add.grid==TRUE){abline(h=min(y.var/shrinkfactor), col=gridcolor)}
+    if(add.grid==TRUE){abline(h=min(y.var/shrinkfactor),
+                              col=gridcolor, lwd=global.lwd)}
 
-    lines(x.var, y.var/shrinkfactor)
+    lines(x.var, y.var/shrinkfactor, lwd=global.lwd)
     polygon(x.var, y.var/shrinkfactor, col=fill.col)
   }
 
@@ -92,10 +101,11 @@ basedjoy <- function(density.var, grouping.var, dataset, shrinkfactor=2.5,
     axis(2,
          at=ypos.store/shrinkfactor,
          labels=group.names,
-         las=1)
+         las=1,
+         lwd=boxtype.xaxis)
   }
 
 };
 
-
-#basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=1)
+basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
+         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
