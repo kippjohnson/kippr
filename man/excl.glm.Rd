@@ -19,6 +19,7 @@ from the "." (i.e., exclude a column or columns from the rest of the
 variables in the dataset).
 }
 \examples{
+
 data(infert)
 m1 <- excl.glm("conc", Theoph, excl.cols="Subject")
 summary(m1)
