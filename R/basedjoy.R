@@ -36,7 +36,9 @@
 #' lincoln_df$mnth <- as.factor(lincoln_df$Month)
 #'
 #' basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
-#'         title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
+#'       title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5),
+#'             fill.col=c("red","blue") # very easy to establish a gradient
+#'             )
 #'
 #'
 #' # Explore how different values of shrinkfactor change perspective

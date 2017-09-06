@@ -5,8 +5,7 @@
 #' @param database Database on the MySQL server
 #' @param connect A previously opened connection, see example
 #' @import data.table
-#' @importFrom RMySQL dbConnect
-#' @importFrom RMySQL dbGetQuery
+#' @import RMySQL
 #' @export
 #' @examples
 #' \dontrun{
@@ -24,6 +23,6 @@
 sql_get <- function(selection="*", table, database="user_johnsk26", connect=con){
     q1 <- paste0("select ", selection, " from ")
     query.string <- paste0(q1, database, ".", table)
-    query.results <- as.data.table(dbGetQuery(conn=connect, statement=query.string))
+    query.results <- as.data.table(RMySQL::dbGetQuery(conn=connect, statement=query.string))
     return(query.results)
 }

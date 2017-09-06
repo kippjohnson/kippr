@@ -14,8 +14,16 @@
 #' head5(abc)
 
 head5 <- function(df, nc=5, nr=5){
-    if(any(class(df)=="data.table")){
+
+    # Case 1: inputted df is less than nr x nc
+    if(dim(df)[1] < nr | dim(df)[2] < nc){
+        print(head(df)) # revert to standard head
+
+    # Case 2: data table input
+    }else if(any(class(df)=="data.table")){
         print(head(df[1:nr,1:nc]))
+
+    # Case 3: some other class input, hopefully dataframe
     }else{
         print(head(df[,c(1:nc)], n=nr))
     }

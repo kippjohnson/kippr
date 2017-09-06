@@ -21,7 +21,7 @@ basedjoy(density.var, grouping.var, dataset, shrinkfactor = NA,
 
 \item{xstretch}{x limits controlled by min/max +/- (xstretch * kernel bandwidth). 3 is default in ggjoy.}
 
-\item{fill.col}{Fill color for the distributions}
+\item{fill.col}{Fill color for the distributions; either one color or a vector of multiple, in which case a gradient will be built of length unique(grouping.var)}
 
 \item{add.grid}{Should we continue the x lines past calculated density}
 
@@ -60,7 +60,9 @@ lincoln_df$mean.temp <- as.double(lincoln_df$`Mean Temperature [F]`)
 lincoln_df$mnth <- as.factor(lincoln_df$Month)
 
 basedjoy("mean.temp", "mnth", lincoln_df, shrinkfactor=50,
-        title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5))
+      title="Monthly Temperature in Lincoln", mai=c(0.5,1.25,1,0.5),
+            fill.col=c("red","blue") # very easy to establish a gradient
+            )
 
 
 # Explore how different values of shrinkfactor change perspective
